@@ -80,40 +80,63 @@ public class BoardTest {
 		myObj.registerPlayer("akshay2");
 		myObj.registerPlayer("akshay3");
 		myObj.registerPlayer("akshay4");
+//		
+//		UUID myarray[] = new UUID[4];
+//	
+//		JSONArray array = myObj.data.getJSONArray("players");
+//		JSONObject tmp;
+//		for(int a=0;a<array.length();a++)
+//		{
+//			tmp = array.getJSONObject(a);
+//			myarray[a]=(UUID) tmp.get("uuid");
+//			System.out.println(myarray[a]);
+//
+//		}
 		
-		UUID myarray[] = new UUID[4];
-	
-		JSONArray array = myObj.data.getJSONArray("players");
-		JSONObject tmp;
-		for(int a=0;a<array.length();a++)
+		
+		for(int a=0;a<=20;a++)
 		{
-			tmp = array.getJSONObject(a);
-			myarray[a]=(UUID) tmp.get("uuid");
-			System.out.println(myarray[a]);
-
-		}
 		
 		JSONObject muy= (JSONObject) myObj.data.getJSONArray("players").get(Integer.parseInt(myObj.data.get("turn").toString()));
-		System.err.println(muy);
+		System.err.println("here"+muy);
+		int initial_position=muy.getInt("position");
 		
+
+		System.err.println("here then"+muy.getInt("position"));
+		
+		// roll dice
 		JSONObject  myjson = myObj.rollDice(UUID.fromString(muy.get("uuid").toString()));
 		
-		System.err.println(myjson.get("message"));
+		int current_position=Integer.parseInt(myjson.get("dice").toString())+initial_position;
 		
-		
-		if(Integer.parseInt(myjson.get("dice").toString())==2)
+		JSONObject temp =(JSONObject) myObj.getData().getJSONArray("steps").get(current_position);
+		int type =  (Integer) temp.get("type");
+		if( type==2)
 		//		myObj.data.get("turn"))
 		{
-		assertThat(myjson.get("message")).isEqualTo("Player climbed a ladder, moved to ");
 		
+			
+			assertThat(myjson.get("message")).isEqualTo("Player climbed a ladder, moved to "+temp.getInt("target"));
+		System.err.println("Player climbed a ladder, moved to "+temp.getInt("target"));
 		
 		}
+		else if(type==0)
+		{
+		assertThat(myjson.get("message")).isEqualTo("Player moved to "+current_position);
+		
+		System.out.println("Player moved to "+current_position);
+		}
+		
 		else
 		{
-		assertThat(myjson.get("message")).isEqualTo("Player moved to "+myjson.get("dice"));
+			assertThat(myjson.get("message")).isEqualTo("Player was bit by a snake, moved back to "+temp.getInt("target"));
+			System.out.println("Player was bit by a snake, moved back to "+temp.getInt("target"));
 		}
-		assertThat(myjson.get("playerUuid")).isEqualTo(myarray[0]);
-		assertThat(myjson.get("playerName")).isEqualTo("akshay1");
+
+		assertThat(myjson.get("playerUuid")).isEqualTo(muy.get("uuid"));
+		assertThat(myjson.get("playerName")).isEqualTo(muy.get("name"));
+		}
+		
 		
 		
 	}
