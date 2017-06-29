@@ -38,33 +38,27 @@ public class BoardTest {
 
 		assertThat(boardreader.data).isNotNull();
 		assertThat(boardreader.uuid).isNotNull();
+		//System.err.println((boardreader.registerPlayer("shadab5")).length());
+		
 		assertThat((boardreader.registerPlayer("shadab")).length()).isEqualTo(1);
 		assertThat((boardreader.registerPlayer("shadab1")).length()).isEqualTo(2);
 
 		JSONObject hey = (JSONObject) boardreader.data.getJSONArray("players").get(1);
 
-		System.err.println(hey);
-
 		UUID my = UUID.fromString(hey.get("uuid").toString());
+		assertThat(boardreader.deletePlayer(my).length()).isEqualTo(1);
 
-		System.out.println("hereee " + my);
-
-		System.out.println(boardreader.deletePlayer(my));
-
-		// JSONArray temp =;
-
-		// assertThat(boardreader.data.getJSONArray("player").get(1));
-		// assertThat((boardreader.registerPlayer("shadab5")).length()).isEqualTo(3);
-
-		assertThat((boardreader.registerPlayer("shadab1")).length()).isEqualTo(2);
-
-		assertThat((boardreader.registerPlayer("shadab2")).length()).isEqualTo(3);
-		assertThat((boardreader.registerPlayer("shadab3")).length()).isEqualTo(4);
+		
+		
+		
+//		assertThat((boardreader.registerPlayer("shadab1")).length()).isEqualTo(2);
+//		assertThat((boardreader.registerPlayer("shadab2")).length()).isEqualTo(3);
+//		assertThat((boardreader.registerPlayer("shadab3")).length()).isEqualTo(4);
 
 	}
 
 
-	@Test(expectedExceptions = MaxPlayersReachedExeption.class, expectedExceptionsMessageRegExp = "The board already has maximum allowedPlayer: 4")
+	@Test(expectedExceptions = MaxPlayersReachedExeption.class)
 	public void if_playerlist_exceeds_the_number_four()
 			throws UnsupportedEncodingException, IOException, PlayerExistsException, GameInProgressException, MaxPlayersReachedExeption{
 
@@ -74,11 +68,11 @@ public class BoardTest {
 //		assertThat((boardreader1.registerPlayer("shadab1")).length()).isEqualTo(2);
 //		assertThat((boardreader1.registerPlayer("shadab2")).length()).isEqualTo(3);
 //		assertThat((boardreader1.registerPlayer("shadab3")).length()).isEqualTo(4);
-		boardreader.registerPlayer("shadab1");
-		boardreader.registerPlayer("shadab2");
-		boardreader.registerPlayer("shadab3");
-		boardreader.registerPlayer("shadab4");
-		boardreader.registerPlayer("shadab5");
+		boardreader1.registerPlayer("shadab1");
+		boardreader1.registerPlayer("shadab2");
+		boardreader1.registerPlayer("shadab3");
+		boardreader1.registerPlayer("shadab4");
+		boardreader1.registerPlayer("shadab5");
 	}
 
 	@Test(expectedExceptions = PlayerExistsException.class, expectedExceptionsMessageRegExp = "Player 'shadab' already exists on board")
