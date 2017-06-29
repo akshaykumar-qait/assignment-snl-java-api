@@ -93,15 +93,20 @@ public class BoardTest {
 
 		}
 		
+		JSONObject muy= (JSONObject) myObj.data.getJSONArray("players").get(Integer.parseInt(myObj.data.get("turn").toString()));
+		System.err.println(muy);
 		
-		JSONObject  myjson = myObj.rollDice(myarray[0]);
+		JSONObject  myjson = myObj.rollDice(UUID.fromString(muy.get("uuid").toString()));
 		
 		System.err.println(myjson.get("message"));
 		
 		
+		if(Integer.parseInt(myjson.get("dice").toString())==2)
+		//		myObj.data.get("turn"))
+		{
+		assertThat(myjson.get("message")).isEqualTo("Player climbed a ladder, moved to ");
 		
-		if(Integer.parseInt(myjson.get("dice").toString())==2){
-		assertThat(myjson.get("message")).isEqualTo("Player climbed a ladder, moved to "+myjson.get("newposition"));
+		
 		}
 		else
 		{
@@ -109,29 +114,6 @@ public class BoardTest {
 		}
 		assertThat(myjson.get("playerUuid")).isEqualTo(myarray[0]);
 		assertThat(myjson.get("playerName")).isEqualTo("akshay1");
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-				
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		
 	}
