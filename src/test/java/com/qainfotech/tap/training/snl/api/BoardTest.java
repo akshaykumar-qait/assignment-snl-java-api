@@ -15,11 +15,7 @@ import com.qainfotech.tap.training.snl.api.GameInProgressException;
 import com.qainfotech.tap.training.snl.api.MaxPlayersReachedExeption;
 import com.qainfotech.tap.training.snl.api.PlayerExistsException;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import static org.assertj.core.api.Assertions.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
 
 public class BoardTest {
 
@@ -36,8 +32,8 @@ public class BoardTest {
 
 		boardreader = new Board();
 
-		assertThat(boardreader.data).isNotNull();
-		assertThat(boardreader.uuid).isNotNull();
+		assertThat(boardreader.getData()).isNotNull();
+		assertThat(boardreader.getUUID()).isNotNull();
 		//System.err.println((boardreader.registerPlayer("shadab5")).length());
 		
 		assertThat((boardreader.registerPlayer("shadab")).length()).isEqualTo(1);
@@ -48,13 +44,6 @@ public class BoardTest {
 		UUID my = UUID.fromString(hey.get("uuid").toString());
 		assertThat(boardreader.deletePlayer(my).length()).isEqualTo(1);
 
-		
-		
-		
-//		assertThat((boardreader.registerPlayer("shadab1")).length()).isEqualTo(2);
-//		assertThat((boardreader.registerPlayer("shadab2")).length()).isEqualTo(3);
-//		assertThat((boardreader.registerPlayer("shadab3")).length()).isEqualTo(4);
-
 	}
 
 
@@ -63,12 +52,7 @@ public class BoardTest {
 			throws UnsupportedEncodingException, IOException, PlayerExistsException, GameInProgressException, MaxPlayersReachedExeption{
 
 		boardreader1 = new Board();
-//		assertThat((boardreader1.registerPlayer("shadab")).length()).isEqualTo(1);
-//
-//		assertThat((boardreader1.registerPlayer("shadab1")).length()).isEqualTo(2);
-//		assertThat((boardreader1.registerPlayer("shadab2")).length()).isEqualTo(3);
-//		assertThat((boardreader1.registerPlayer("shadab3")).length()).isEqualTo(4);
-		boardreader1.registerPlayer("shadab1");
+	    boardreader1.registerPlayer("shadab1");
 		boardreader1.registerPlayer("shadab2");
 		boardreader1.registerPlayer("shadab3");
 		boardreader1.registerPlayer("shadab4");
@@ -83,6 +67,72 @@ public class BoardTest {
 		boardreader = new Board();
 		boardreader.registerPlayer("shadab");
 		boardreader.registerPlayer("shadab");
+		
+	}
+	
+	@Test
+	public  void check_full_rolldice() throws FileNotFoundException, UnsupportedEncodingException, IOException, PlayerExistsException, GameInProgressException, MaxPlayersReachedExeption, InvalidTurnException
+	{
+		
+		Board myObj = new Board();
+		
+		myObj.registerPlayer("akshay1");
+		myObj.registerPlayer("akshay2");
+		myObj.registerPlayer("akshay3");
+		myObj.registerPlayer("akshay4");
+		
+		UUID myarray[] = new UUID[4];
+	
+		JSONArray array = myObj.data.getJSONArray("players");
+		JSONObject tmp;
+		for(int a=0;a<array.length();a++)
+		{
+			tmp = array.getJSONObject(a);
+			myarray[a]=(UUID) tmp.get("uuid");
+			System.out.println(myarray[a]);
+
+		}
+		
+		
+		JSONObject  myjson = myObj.rollDice(myarray[0]);
+		
+		System.err.println(myjson.get("message"));
+		
+		
+		
+		if(Integer.parseInt(myjson.get("dice").toString())==2){
+		assertThat(myjson.get("message")).isEqualTo("Player climbed a ladder, moved to "+myjson.get("newposition"));
+		}
+		else
+		{
+		assertThat(myjson.get("message")).isEqualTo("Player moved to "+myjson.get("dice"));
+		}
+		assertThat(myjson.get("playerUuid")).isEqualTo(myarray[0]);
+		assertThat(myjson.get("playerName")).isEqualTo("akshay1");
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+				
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 	}
 
