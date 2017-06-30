@@ -58,19 +58,7 @@ public class BoardTest {
 		boardreader1.registerPlayer("shadab4");
 		boardreader1.registerPlayer("shadab5");
 	}
-
-	@Test(expectedExceptions = PlayerExistsException.class, expectedExceptionsMessageRegExp = "Player 'shadab' already exists on board")
-	public void if_entered_same_player_name_should_return_exception()
-			throws FileNotFoundException, UnsupportedEncodingException, PlayerExistsException, GameInProgressException,
-			MaxPlayersReachedExeption, IOException {
-
-		boardreader = new Board();
-		boardreader.registerPlayer("shadab");
-		boardreader.registerPlayer("shadab");
-
-	}
 	
-		
 	@Test(expectedExceptions = GameInProgressException.class)
 	public void game_in_progress_exception() throws UnsupportedEncodingException, IOException,
 			PlayerExistsException, GameInProgressException, MaxPlayersReachedExeption, JSONException, InvalidTurnException {
@@ -90,6 +78,17 @@ public class BoardTest {
 		
 		
 		
+	}
+
+	@Test(expectedExceptions = PlayerExistsException.class, expectedExceptionsMessageRegExp = "Player 'shadab' already exists on board")
+	public void if_entered_same_player_name_should_return_exception()
+			throws FileNotFoundException, UnsupportedEncodingException, PlayerExistsException, GameInProgressException,
+			MaxPlayersReachedExeption, IOException {
+
+		boardreader = new Board();
+		boardreader.registerPlayer("shadab");
+		boardreader.registerPlayer("shadab");
+
 	}
 
 	@Test(expectedExceptions = NoUserWithSuchUUIDException.class, expectedExceptionsMessageRegExp = "No Player with uuid 'fc487af1-e11a-46a2-99de-1c22a69df5da' on board")
@@ -272,25 +271,27 @@ public class BoardTest {
 		myObj.registerPlayer("akshay3");
 		myObj.registerPlayer("akshay4");
 
-		JSONObject muy = (JSONObject) myObj.data.getJSONArray("players")
+		JSONObject object_of_turn_player = (JSONObject) myObj.data.getJSONArray("players")
 				.get(Integer.parseInt(myObj.data.get("turn").toString()));
 		// System.err.println("here"+muy);
-		int initial_position = muy.getInt("position");
+		int initial_position = object_of_turn_player.getInt("position");
 
-		while (initial_position < 50) {
+		while (initial_position != 100) {
 
-			muy = (JSONObject) myObj.data.getJSONArray("players")
+			object_of_turn_player = (JSONObject) myObj.data.getJSONArray("players")
 					.get(Integer.parseInt(myObj.data.get("turn").toString()));
 			// System.err.println("here"+muy);
-			initial_position = muy.getInt("position");
+			initial_position = object_of_turn_player.getInt("position");
 
 			// System.err.println("here then"+muy.getInt("position"));
 
 			// roll dice
-			JSONObject myjson = myObj.rollDice(UUID.fromString(muy.get("uuid").toString()));
+			JSONObject myjson = myObj.rollDice(UUID.fromString(object_of_turn_player.get("uuid").toString()));
 
 			int current_position = Integer.parseInt(myjson.get("dice").toString()) + initial_position;
 
+			if(current_position<100)
+			{
 			JSONObject temp = (JSONObject) myObj.getData().getJSONArray("steps").get(current_position);
 			int type = (Integer) temp.get("type");
 			if (type == 2)
@@ -299,26 +300,27 @@ public class BoardTest {
 
 				assertThat(myjson.get("message"))
 						.isEqualTo("Player climbed a ladder, moved to " + temp.getInt("target"));
-				// System.err.println("Player climbed a ladder, moved to
-				// "+temp.getInt("target"));
+				 System.err.println("Player climbed a ladder, moved to "+temp.getInt("target"));
 
 			} else if (type == 0) {
 				assertThat(myjson.get("message")).isEqualTo("Player moved to " + current_position);
 
-				// System.out.println("Player moved to "+current_position);
+				 System.err.println("Player moved to "+current_position);
 			}
 
 			else {
 				assertThat(myjson.get("message"))
 						.isEqualTo("Player was bit by a snake, moved back to " + temp.getInt("target"));
-				// System.out.println("Player was bit by a snake, moved back to
-				// "+temp.getInt("target"));
+				 System.out.println("Player was bit by a snake, moved back to "+temp.getInt("target"));
+			
 			}
 
-			assertThat(myjson.get("playerUuid")).isEqualTo(muy.get("uuid"));
-			assertThat(myjson.get("playerName")).isEqualTo(muy.get("name"));
+			assertThat(myjson.get("playerUuid")).isEqualTo(object_of_turn_player.get("uuid"));
+			assertThat(myjson.get("playerName")).isEqualTo(object_of_turn_player.get("name"));
 		}
-
+		}
+		System.out.println("Winner is "+object_of_turn_player.get("name"));
+		
 	}
 
 }
