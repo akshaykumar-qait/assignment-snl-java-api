@@ -69,6 +69,28 @@ public class BoardTest {
 		boardreader.registerPlayer("shadab");
 
 	}
+	
+		
+	@Test(expectedExceptions = GameInProgressException.class)
+	public void game_in_progress_exception() throws UnsupportedEncodingException, IOException,
+			PlayerExistsException, GameInProgressException, MaxPlayersReachedExeption, JSONException, InvalidTurnException {
+
+		boardreader1 = new Board();
+		boardreader1.registerPlayer("shadab1");
+		boardreader1.registerPlayer("shadab2");
+		
+
+		JSONObject jsonobjofplayer_turn = (JSONObject) boardreader1.data.getJSONArray("players")
+				.get(Integer.parseInt(boardreader1.data.get("turn").toString()));
+		// roll dice
+		boardreader1.rollDice(UUID.fromString(jsonobjofplayer_turn.get("uuid").toString()));
+
+		boardreader1.registerPlayer("shadab3");
+		
+		
+		
+		
+	}
 
 	@Test(expectedExceptions = NoUserWithSuchUUIDException.class, expectedExceptionsMessageRegExp = "No Player with uuid 'fc487af1-e11a-46a2-99de-1c22a69df5da' on board")
 	public void check_invalid_uuid_exception()
