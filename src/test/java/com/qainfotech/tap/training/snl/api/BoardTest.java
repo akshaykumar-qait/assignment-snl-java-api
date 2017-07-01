@@ -46,6 +46,25 @@ public class BoardTest {
 		assertThat(boardreader.deletePlayer(my).length()).isEqualTo(1);
 
 	}
+	
+	@Test
+	public void check_board_parameterized_constructor() throws IOException, PlayerExistsException, GameInProgressException, MaxPlayersReachedExeption
+	{
+		UUID uuid = UUID.randomUUID();
+		
+		Board my_old_board = new Board();
+		
+		
+	Board	boardreader1 = new Board(my_old_board.getUUID());
+	
+	assertThat(boardreader1.getData()).isNotNull();
+	assertThat(boardreader1.getUUID()).isNotNull();
+	
+	assertThat((boardreader1.registerPlayer("shadab")).length()).isEqualTo(1);
+	assertThat((boardreader1.registerPlayer("akshay")).length()).isEqualTo(2);
+	
+	
+	}
 
 	@Test(expectedExceptions = MaxPlayersReachedExeption.class)
 	public void if_playerlist_exceeds_the_number_four() throws UnsupportedEncodingException, IOException,
