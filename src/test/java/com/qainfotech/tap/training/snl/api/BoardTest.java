@@ -350,37 +350,39 @@ public class BoardTest {
 			// System.err.println("here then"+muy.getInt("position"));
 
 			// roll dice
-			JSONObject myjson = myObj.rollDice(UUID.fromString(object_of_turn_player.get("uuid").toString()));
+			JSONObject input_json = myObj.rollDice(UUID.fromString(object_of_turn_player.get("uuid").toString()));
 
-			int current_position = Integer.parseInt(myjson.get("dice").toString()) + initial_position;
+			int current_position = Integer.parseInt(input_json.get("dice").toString()) + initial_position;
 
 			if(current_position<100)
 			{
+				
+				System.out.println();
 			JSONObject temp = (JSONObject) myObj.getData().getJSONArray("steps").get(current_position);
 			int type = (Integer) temp.get("type");
 			if (type == 2)
 			// myObj.data.get("turn"))
 			{
 
-				assertThat(myjson.get("message"))
+				assertThat(input_json.get("message"))
 						.isEqualTo("Player climbed a ladder, moved to " + temp.getInt("target"));
-				 System.err.println("Player climbed a ladder, moved to "+temp.getInt("target"));
+				 System.err.println(object_of_turn_player+" Player climbed a ladder, moved to "+temp.getInt("target"));
 
 			} else if (type == 0) {
-				assertThat(myjson.get("message")).isEqualTo("Player moved to " + current_position);
+				assertThat(input_json.get("message")).isEqualTo("Player moved to " + current_position);
 
-				 System.err.println("Player moved to "+current_position);
+				 System.err.println(object_of_turn_player+" Player moved to "+current_position);
 			}
 
 			else {
-				assertThat(myjson.get("message"))
+				assertThat(input_json.get("message"))
 						.isEqualTo("Player was bit by a snake, moved back to " + temp.getInt("target"));
-				 System.out.println("Player was bit by a snake, moved back to "+temp.getInt("target"));
+				 System.out.println(object_of_turn_player+" Player was bit by a snake, moved back to "+temp.getInt("target"));
 			
 			}
 
-			assertThat(myjson.get("playerUuid")).isEqualTo(object_of_turn_player.get("uuid"));
-			assertThat(myjson.get("playerName")).isEqualTo(object_of_turn_player.get("name"));
+			assertThat(input_json.get("playerUuid")).isEqualTo(object_of_turn_player.get("uuid"));
+			assertThat(input_json.get("playerName")).isEqualTo(object_of_turn_player.get("name"));
 		}
 		}
 		System.out.println("Winner is "+object_of_turn_player.get("name"));
