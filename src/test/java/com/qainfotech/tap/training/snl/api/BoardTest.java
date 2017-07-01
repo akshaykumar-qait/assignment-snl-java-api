@@ -137,7 +137,71 @@ public class BoardTest {
 		assertThat(output_json.get("message")).isEqualTo("Incorrect roll of dice. Player did not move");
 
 	}
+		
+	@Test
+	public static void check_turn_works_or_not() throws FileNotFoundException, UnsupportedEncodingException, IOException, PlayerExistsException, GameInProgressException, MaxPlayersReachedExeption, JSONException, InvalidTurnException
+	{
+		Board board_obj = new Board();
+		board_obj.registerPlayer("akshay");
+		board_obj.registerPlayer("nishant");	
+		board_obj.registerPlayer("shadab");	
+		board_obj.registerPlayer("superman");	
+		
+		
+		JSONObject jsonobjofplayer_turn = (JSONObject) board_obj.data.getJSONArray("players")
+				.get(Integer.parseInt(board_obj.data.get("turn").toString()));
+		
+		assertThat(jsonobjofplayer_turn.get("name")).isEqualTo("akshay");
+		
+		// roll dice
+		 board_obj.rollDice(UUID.fromString(jsonobjofplayer_turn.get("uuid").toString()));
+		
+		 jsonobjofplayer_turn = (JSONObject) board_obj.data.getJSONArray("players")
+					.get(Integer.parseInt(board_obj.data.get("turn").toString()));
+			
+		assertThat(jsonobjofplayer_turn.get("name")).isEqualTo("nishant");
 
+		// roll dice
+		 board_obj.rollDice(UUID.fromString(jsonobjofplayer_turn.get("uuid").toString()));
+		
+		 jsonobjofplayer_turn = (JSONObject) board_obj.data.getJSONArray("players")
+					.get(Integer.parseInt(board_obj.data.get("turn").toString()));
+			
+		assertThat(jsonobjofplayer_turn.get("name")).isEqualTo("shadab");
+
+
+		// roll dice
+		 board_obj.rollDice(UUID.fromString(jsonobjofplayer_turn.get("uuid").toString()));
+		
+		 jsonobjofplayer_turn = (JSONObject) board_obj.data.getJSONArray("players")
+					.get(Integer.parseInt(board_obj.data.get("turn").toString()));
+			
+		assertThat(jsonobjofplayer_turn.get("name")).isEqualTo("superman");
+
+
+		// roll dice
+		 board_obj.rollDice(UUID.fromString(jsonobjofplayer_turn.get("uuid").toString()));
+		
+		 jsonobjofplayer_turn = (JSONObject) board_obj.data.getJSONArray("players")
+					.get(Integer.parseInt(board_obj.data.get("turn").toString()));
+			
+		assertThat(jsonobjofplayer_turn.get("name")).isEqualTo("akshay");
+
+
+		// roll dice
+		 board_obj.rollDice(UUID.fromString(jsonobjofplayer_turn.get("uuid").toString()));
+		
+		 jsonobjofplayer_turn = (JSONObject) board_obj.data.getJSONArray("players")
+					.get(Integer.parseInt(board_obj.data.get("turn").toString()));
+			
+		assertThat(jsonobjofplayer_turn.get("name")).isEqualTo("nishant");
+
+
+
+		
+	}
+	
+	
 	@Test
 	public void check_ladders()
 			throws FileNotFoundException, UnsupportedEncodingException, IOException, PlayerExistsException,
