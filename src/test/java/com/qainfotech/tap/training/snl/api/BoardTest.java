@@ -35,6 +35,8 @@ public class BoardTest {
 
 		assertThat(boardreader.getData()).isNotNull();
 		assertThat(boardreader.getUUID()).isNotNull();
+		
+		assertThat(boardreader.toString()).isEqualTo("UUID:" + boardreader.uuid.toString() + "\n" + boardreader.data.toString());
 		// System.err.println((boardreader.registerPlayer("shadab5")).length());
 
 		assertThat((boardreader.registerPlayer("shadab")).length()).isEqualTo(1);
@@ -46,26 +48,27 @@ public class BoardTest {
 		assertThat(boardreader.deletePlayer(my).length()).isEqualTo(1);
 
 	}
-	
-	@Test
-	public void check_board_parameterized_constructor() throws IOException, PlayerExistsException, GameInProgressException, MaxPlayersReachedExeption
-	{
-		UUID uuid = UUID.randomUUID();
-		
-		Board my_old_board = new Board();
-		
-		
-	Board	boardreader1 = new Board(my_old_board.getUUID());
-	
-	assertThat(boardreader1.getData()).isNotNull();
-	assertThat(boardreader1.getUUID()).isNotNull();
-	
-	assertThat((boardreader1.registerPlayer("shadab")).length()).isEqualTo(1);
-	assertThat((boardreader1.registerPlayer("akshay")).length()).isEqualTo(2);
-	
-	
-	}
 
+	@Test
+	 	public void check_board_parameterized_constructor() throws IOException, PlayerExistsException, GameInProgressException, MaxPlayersReachedExeption
+	 	{
+	 		UUID uuid = UUID.randomUUID();
+	 		
+	 		Board my_old_board = new Board();
+	 		
+	 		
+	 	Board	boardreader1 = new Board(my_old_board.getUUID());
+	 	
+	 	assertThat(boardreader1.getData()).isNotNull();
+	 	assertThat(boardreader1.getUUID()).isNotNull();
+	 	
+	 	assertThat((boardreader1.registerPlayer("shadab")).length()).isEqualTo(1);
+	 	assertThat((boardreader1.registerPlayer("akshay")).length()).isEqualTo(2);
+	 	
+	 	
+	 	}
+	
+	
 	@Test(expectedExceptions = MaxPlayersReachedExeption.class)
 	public void if_playerlist_exceeds_the_number_four() throws UnsupportedEncodingException, IOException,
 			PlayerExistsException, GameInProgressException, MaxPlayersReachedExeption {
@@ -156,71 +159,7 @@ public class BoardTest {
 		assertThat(output_json.get("message")).isEqualTo("Incorrect roll of dice. Player did not move");
 
 	}
-		
-	@Test
-	public static void check_turn_works_or_not() throws FileNotFoundException, UnsupportedEncodingException, IOException, PlayerExistsException, GameInProgressException, MaxPlayersReachedExeption, JSONException, InvalidTurnException
-	{
-		Board board_obj = new Board();
-		board_obj.registerPlayer("akshay");
-		board_obj.registerPlayer("nishant");	
-		board_obj.registerPlayer("shadab");	
-		board_obj.registerPlayer("superman");	
-		
-		
-		JSONObject jsonobjofplayer_turn = (JSONObject) board_obj.data.getJSONArray("players")
-				.get(Integer.parseInt(board_obj.data.get("turn").toString()));
-		
-		assertThat(jsonobjofplayer_turn.get("name")).isEqualTo("akshay");
-		
-		// roll dice
-		 board_obj.rollDice(UUID.fromString(jsonobjofplayer_turn.get("uuid").toString()));
-		
-		 jsonobjofplayer_turn = (JSONObject) board_obj.data.getJSONArray("players")
-					.get(Integer.parseInt(board_obj.data.get("turn").toString()));
-			
-		assertThat(jsonobjofplayer_turn.get("name")).isEqualTo("nishant");
 
-		// roll dice
-		 board_obj.rollDice(UUID.fromString(jsonobjofplayer_turn.get("uuid").toString()));
-		
-		 jsonobjofplayer_turn = (JSONObject) board_obj.data.getJSONArray("players")
-					.get(Integer.parseInt(board_obj.data.get("turn").toString()));
-			
-		assertThat(jsonobjofplayer_turn.get("name")).isEqualTo("shadab");
-
-
-		// roll dice
-		 board_obj.rollDice(UUID.fromString(jsonobjofplayer_turn.get("uuid").toString()));
-		
-		 jsonobjofplayer_turn = (JSONObject) board_obj.data.getJSONArray("players")
-					.get(Integer.parseInt(board_obj.data.get("turn").toString()));
-			
-		assertThat(jsonobjofplayer_turn.get("name")).isEqualTo("superman");
-
-
-		// roll dice
-		 board_obj.rollDice(UUID.fromString(jsonobjofplayer_turn.get("uuid").toString()));
-		
-		 jsonobjofplayer_turn = (JSONObject) board_obj.data.getJSONArray("players")
-					.get(Integer.parseInt(board_obj.data.get("turn").toString()));
-			
-		assertThat(jsonobjofplayer_turn.get("name")).isEqualTo("akshay");
-
-
-		// roll dice
-		 board_obj.rollDice(UUID.fromString(jsonobjofplayer_turn.get("uuid").toString()));
-		
-		 jsonobjofplayer_turn = (JSONObject) board_obj.data.getJSONArray("players")
-					.get(Integer.parseInt(board_obj.data.get("turn").toString()));
-			
-		assertThat(jsonobjofplayer_turn.get("name")).isEqualTo("nishant");
-
-
-
-		
-	}
-	
-	
 	@Test
 	public void check_ladders()
 			throws FileNotFoundException, UnsupportedEncodingException, IOException, PlayerExistsException,
@@ -369,42 +308,40 @@ public class BoardTest {
 			// System.err.println("here then"+muy.getInt("position"));
 
 			// roll dice
-			JSONObject input_json = myObj.rollDice(UUID.fromString(object_of_turn_player.get("uuid").toString()));
+			JSONObject myjson = myObj.rollDice(UUID.fromString(object_of_turn_player.get("uuid").toString()));
 
-			int current_position = Integer.parseInt(input_json.get("dice").toString()) + initial_position;
+			int current_position = Integer.parseInt(myjson.get("dice").toString()) + initial_position;
 
 			if(current_position<100)
 			{
-				
-				System.out.println();
 			JSONObject temp = (JSONObject) myObj.getData().getJSONArray("steps").get(current_position);
 			int type = (Integer) temp.get("type");
 			if (type == 2)
 			// myObj.data.get("turn"))
 			{
 
-				assertThat(input_json.get("message"))
+				assertThat(myjson.get("message"))
 						.isEqualTo("Player climbed a ladder, moved to " + temp.getInt("target"));
-				 System.err.println(object_of_turn_player+" Player climbed a ladder, moved to "+temp.getInt("target"));
+				 System.err.println("Player climbed a ladder, moved to "+temp.getInt("target"));
 
 			} else if (type == 0) {
-				assertThat(input_json.get("message")).isEqualTo("Player moved to " + current_position);
+				assertThat(myjson.get("message")).isEqualTo("Player moved to " + current_position);
 
-				 System.err.println(object_of_turn_player+" Player moved to "+current_position);
+				 System.err.println("Player moved to "+current_position);
 			}
 
 			else {
-				assertThat(input_json.get("message"))
+				assertThat(myjson.get("message"))
 						.isEqualTo("Player was bit by a snake, moved back to " + temp.getInt("target"));
-				 System.out.println(object_of_turn_player+" Player was bit by a snake, moved back to "+temp.getInt("target"));
+				 System.out.println("Player was bit by a snake, moved back to "+temp.getInt("target"));
 			
 			}
 
-			assertThat(input_json.get("playerUuid")).isEqualTo(object_of_turn_player.get("uuid"));
-			assertThat(input_json.get("playerName")).isEqualTo(object_of_turn_player.get("name"));
+			assertThat(myjson.get("playerUuid")).isEqualTo(object_of_turn_player.get("uuid"));
+			assertThat(myjson.get("playerName")).isEqualTo(object_of_turn_player.get("name"));
 		}
 		}
-		System.out.println("Winner is "+object_of_turn_player.get("name"));
+		System.out.println(object_of_turn_player.get("name"));
 		
 	}
 
